@@ -15,4 +15,15 @@ public class AcceptanceTest {
 
         assertThat(account.getActualBalance()).isEqualTo(initialBalance + depositMoney);
     }
+
+    @Test
+    public void should_retrieve_money_from_account_balance_when_making_a_withdrawal() {
+        Account account = Account.of(30);
+        long initialBalance = account.getActualBalance();
+        long withdrawalMoney = 20;
+
+        account.makeAWithdrawal(withdrawalMoney);
+
+        assertThat(account.getActualBalance()).isEqualTo(initialBalance - withdrawalMoney);
+    }
 }

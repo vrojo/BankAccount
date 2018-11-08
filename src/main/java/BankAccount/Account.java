@@ -1,5 +1,7 @@
 package BankAccount;
 
+import static BankAccount.Operation.*;
+
 public class Account {
     private long balance;
 
@@ -15,14 +17,19 @@ public class Account {
         return new Account(initialBalance);
     }
 
-    public void makeADeposit(long involvedMoney) {
-        if (involvedMoney <= 0){
-            throw new IllegalArgumentException();
-        }
-        this.balance += involvedMoney;
+    private void makeAnOperation(Operation operationType, long involvedMoney) {
+        this.balance = operationType.operate(this, involvedMoney);
     }
 
     public long getActualBalance() {
         return balance;
+    }
+
+    public void makeADeposit(long depositMoney) {
+        this.makeAnOperation(DEPOSIT, depositMoney);
+    }
+
+    public void makeAWithdrawal(long withdrawalMoney) {
+        this.makeAnOperation(WITHDRAWAL, withdrawalMoney);
     }
 }
