@@ -1,6 +1,7 @@
 package BankAccount;
 
 import org.junit.Test;
+import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AccountTest {
@@ -30,25 +31,31 @@ public class AccountTest {
         Account account = Account.of();
         long moneyOfDeposit = 10;
 
-        account.makeADeposit(moneyOfDeposit);
+        account.makeADeposit(moneyOfDeposit, LocalDateTime.now());
 
         assertThat(account.getActualBalance()).isEqualTo(moneyOfDeposit);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void should_keep_same_balance_and_return_an_error_when_trying_to_add_deposit_of_zero() {
-        Account account = Account.of();
+    @Test
+    public void should_keep_same_balance_when_trying_to_add_deposit_of_zero() {
+        long initialBalance = 10;
+        Account account = Account.of(10);
         long moneyOfDeposit = 0;
 
-        account.makeADeposit(moneyOfDeposit);
+        account.makeADeposit(moneyOfDeposit, LocalDateTime.now());
+
+        assertThat(account.getActualBalance()).isEqualTo(initialBalance);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void should_keep_same_balance_and_return_an_error_when_trying_to_add_deposit_with_a_negative_number() {
-        Account account = Account.of();
+        long initialBalance = 10;
+        Account account = Account.of(initialBalance);
         long moneyOfDeposit = -10;
 
-        account.makeADeposit(moneyOfDeposit);
+        account.makeADeposit(moneyOfDeposit, LocalDateTime.now());
+
+        assertThat(account.getActualBalance()).isEqualTo(initialBalance);
     }
 
     @Test
@@ -57,35 +64,41 @@ public class AccountTest {
         Account account = Account.of(initialMoneyOnAccount);
         long moneyOfWithdrawal = 20;
 
-        account.makeAWithdrawal(moneyOfWithdrawal);
+        account.makeAWithdrawal(moneyOfWithdrawal, LocalDateTime.now());
 
         assertThat(account.getActualBalance()).isEqualTo(initialMoneyOnAccount - moneyOfWithdrawal);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void should_keep_same_balance_and_return_an_error_when_making_a_withdrawal_of_zero() {
         long initialMoneyOnAccount = 50;
         Account account = Account.of(initialMoneyOnAccount);
         long moneyOfWithdrawal = 0;
 
-        account.makeAWithdrawal(moneyOfWithdrawal);
+        account.makeAWithdrawal(moneyOfWithdrawal, LocalDateTime.now());
+
+        assertThat(account.getActualBalance()).isEqualTo(initialMoneyOnAccount);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void should_keep_same_balance_and_return_an_error_when_making_a_withdrawal_of_a_negative_number() {
         long initialMoneyOnAccount = 50;
         Account account = Account.of(initialMoneyOnAccount);
         long moneyOfWithdrawal = -10;
 
-        account.makeAWithdrawal(moneyOfWithdrawal);
+        account.makeAWithdrawal(moneyOfWithdrawal, LocalDateTime.now());
+
+        assertThat(account.getActualBalance()).isEqualTo(initialMoneyOnAccount);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void should_keep_same_balance_and_return_an_error_when_making_a_withdrawal_greater_than_the_money_on_balance() {
         long initialMoneyOnAccount = 10;
         Account account = Account.of(initialMoneyOnAccount);
         long moneyOfWithdrawal = 20;
 
-        account.makeAWithdrawal(moneyOfWithdrawal);
+        account.makeAWithdrawal(moneyOfWithdrawal, LocalDateTime.now());
+
+        assertThat(account.getActualBalance()).isEqualTo(initialMoneyOnAccount);
     }
 }

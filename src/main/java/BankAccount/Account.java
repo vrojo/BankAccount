@@ -1,12 +1,17 @@
 package BankAccount;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import static BankAccount.Operation.*;
+import static java.util.stream.Collectors.joining;
 
 public class Account {
     private long balance;
+    private ArrayList<AccountHistory> accountHistory;
 
-    public Account(long initialBalance) {
+    private Account(long initialBalance) {
         balance = initialBalance;
+        this.accountHistory = new ArrayList<>();
     }
 
     public static Account of() {
@@ -17,19 +22,36 @@ public class Account {
         return new Account(initialBalance);
     }
 
-    private void makeAnOperation(Operation operationType, long involvedMoney) {
-        this.balance = operationType.operate(this, involvedMoney);
+    private String makeAnOperation(Operation operationType, long involvedMoney, LocalDateTime dateOfTheOperation) {
+        long balanceBeforeOperation = this.getActualBalance();
+        try {
+            this.balance = operationType.operate(this, involvedMoney);
+            this.accountHistory.add(new AccountHistory(operationType, involvedMoney, balanceBeforeOperation, dateOfTheOperation));
+            return "Operation completed successfully.";
+        } catch (IllegalArgumentException e) {
+            return "Operation failed...\nYou can not make this operation with a negative or null amount...";
+        } catch (UnsupportedOperationException e) {
+            return "Operation failed...\nYou can not have a negative balance !";
+        }
     }
 
     public long getActualBalance() {
         return balance;
     }
 
-    public void makeADeposit(long depositMoney) {
-        this.makeAnOperation(DEPOSIT, depositMoney);
+    public void makeADeposit(long depositMoney, LocalDateTime dateOfTheOperation) {
+        this.makeAnOperation(DEPOSIT, depositMoney, dateOfTheOperation);
     }
 
-    public void makeAWithdrawal(long withdrawalMoney) {
-        this.makeAnOperation(WITHDRAWAL, withdrawalMoney);
+    public void makeAWithdrawal(long withdrawalMoney, LocalDateTime dateOfTheOperation) {
+        this.makeAnOperation(WITHDRAWAL, withdrawalMoney, dateOfTheOperation);
+    }
+
+    public String getHistoryOfAccount() {
+        if (this.accountHistory.size() == 0) {
+            return "History of your account:\nNo operation on your account.";
+        }
+        return "History of your account:\n" +
+                accountHistory.stream().map(AccountHistory::toString).collect(joining());
     }
 }
